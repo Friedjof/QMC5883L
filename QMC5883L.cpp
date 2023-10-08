@@ -206,3 +206,25 @@ int QMC5883L::readHeading()
   
   return heading;
 }
+
+float QMC5883L::absoluteAngle()
+{
+  int16_t x, y, z, t;
+  float heading = 0;
+
+  if(!readRaw(&x,&y,&z,&t)) return 0;
+
+  if (y < 0) {
+    heading = 180 + (180 + (atan2(y, x) * (180 / M_PI)));
+  } else {
+    heading = atan2(y, x) * (180 / M_PI);
+  }
+
+  if (heading < 0) {
+    heading += 360;
+  } else if (heading >= 360) {
+    heading -= 360;
+  }
+
+  return heading;
+}
